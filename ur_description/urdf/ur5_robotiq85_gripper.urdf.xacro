@@ -7,6 +7,9 @@
 	   name="ur5" >
 	   
   <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+
+  <!-- OJ: mit oder ohne Depth_Camera ??, works!-->
+  <xacro:property name="use_depth_camera" value="${False}"/>.
   
   <!-- common stuff -->
   <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
@@ -79,9 +82,12 @@
     <origin xyz="0 0 0.00" rpy="0 ${-pi/2} ${pi}"/>
   </xacro:robotiq_85_gripper> 
   
-   <!--Kinect https://roboticscasual.com/ros-tutorial-how-to-use-a-depth-camera-with-moveit-for-collision-avoidance/-->
-    <!-- position of kinect has to be changed in common_sensors/urdf/sensors/kinect_properties.urdf.xacro--> 
-    <xacro:include filename="$(find common_sensors)/urdf/sensors/kinect.urdf.xacro" />
-    <xacro:sensor_kinect parent="world"/>
+   
+  <xacro:if value="${use_depth_camera}">
+      <!--Kinect https://roboticscasual.com/ros-tutorial-how-to-use-a-depth-camera-with-moveit-for-collision-avoidance/-->
+      <!-- position of kinect has to be changed in common_sensors/urdf/sensors/kinect_properties.urdf.xacro -->
+      <xacro:include filename="$(find common_sensors)/urdf/sensors/kinect.urdf.xacro" />
+      <xacro:sensor_kinect parent="world"/>
+  </xacro:if>
   
 </robot>

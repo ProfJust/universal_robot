@@ -8,10 +8,9 @@
 	   
   <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
 
-  <!-- ======  OJ: mit oder ohne Depth_Camera ??, works! set  True / False ================= -->
-  <xacro:property name="use_depth_camera" value="${False}"/> 
-  <!-- ??? geht das auch so ?<xacro:arg name="use_depth_camera" default="${False}"/> -->
-  
+  <!-- ======  OJ: mit oder ohne Depth_Camera ??, works! ================= -->
+  <xacro:property name="use_depth_camera" value="${True}"/> 
+    
   <!-- common stuff -->
   <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
 

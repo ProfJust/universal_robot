@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+
+ <!-- ur3_robotiq85_gripper.urdf.xacro -->
+ <!-- OJ 3.2.2022: Robotiq-Gripper an den UR3 anbinden -->
+ <!-- Pfad: catkin_ws/universal_robot/ur_descriptiom/urdf -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+	   name="ur3" >
+	   
+  <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+
+  <!-- ======  OJ: mit oder ohne Depth_Camera ??, works! set  True / False ================= -->
+  <xacro:property name="use_depth_camera" value="${False}"/> 
+  <!-- ??? geht das auch so ?<xacro:arg name="use_depth_camera" default="${False}"/> -->
+  
+  <!-- common stuff -->
+  <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
+
+  <!-- ur3 -->
+  <xacro:include filename="$(find ur_description)/urdf/ur3.urdf.xacro" />
+
+  <!-- arm -->
+  <xacro:ur3_robot prefix="" joint_limited="true"
+    shoulder_pan_lower_limit="${-pi}" shoulder_pan_upper_limit="${pi}"
+    shoulder_lift_lower_limit="${-pi}" shoulder_lift_upper_limit="${pi}"
+    elbow_joint_lower_limit="${-pi}" elbow_joint_upper_limit="${pi}"
+    wrist_1_lower_limit="${-pi}" wrist_1_upper_limit="${pi}"
+    wrist_2_lower_limit="${-pi}" wrist_2_upper_limit="${pi}"
+    wrist_3_lower_limit="${-pi}" wrist_3_upper_limit="${pi}"
+    transmission_hw_interface="$(arg transmission_hw_interface)"
+  />
+  
+  <!-- Gripper von OnRobot RG2 -->
+  <xacro:include filename="$(find on_robot_rg2)/urdf/ur3_robot_hht.urdf.xacro" />
+ 
+  
+   <link name="world" />
+
+  <joint name="world_joint" type="fixed">
+    <parent link="world" />
+    <child link = "base_link" />
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+  
+  <!-- Robotiq Coupler Joint an tool0 oder ee_link -->
+  <joint name="robotiq_coupler_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 ${pi/2.0} 0.0" />
+    <parent link="ee_link"/>   							  
+    <child link="robotiq_coupler"/>
+  </joint>
+     
+  
+  <!-- Robotiq Coupler => rg2_bracket_joint
+   <link name="rg2_bracket_joint">
+    <visual>
+      <geometry>
+        <mesh filename="package://on_robot_ros/on_robot_description/meshes/rg2_v1/visual/single_brakcet.stl" />
+      </geometry>
+      <material name="flat_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://on_robot_ros/on_robot_description/meshes/rg2_v1/collision/single_brakcet.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.168" />
+      <inertia ixx="6.69695624e-05" ixy="5.21511788e-09" ixz="-2.74383009e-08" 
+               iyy="7.85088161e-05" iyz="5.41105193e-07" izz="1.41819717e-04"/>
+    </inertial>
+  </link>
+  
+ 
+  <gazebo reference="rg2_bracket_joint">
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+-->
+  <!-- Attach the on_robot rg2 gripper -->
+  <xacro:onrobot_rg2_model_macro prefix="" parent="onrobot_rg2" >  
+    <origin xyz="0 0 0.00" rpy="0 ${-pi/2} ${pi}"/>
+  </xacro:onrobot_rg2_model_macro> 
+  
+   
+  <xacro:if value="${use_depth_camera}">
+      <!--Kinect https://roboticscasual.com/ros-tutorial-how-to-use-a-depth-camera-with-moveit-for-collision-avoidance/-->
+      <!-- position of kinect has to be changed in common_sensors/urdf/sensors/kinect_properties.urdf.xacro -->
+      <xacro:include filename="$(find common_sensors)/urdf/sensors/kinect.urdf.xacro" />
+      <xacro:sensor_kinect parent="world"/>
+  </xacro:if>
+  
+</robot>

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
 
+<!-- https://git-ce.rwth-aachen.de/henrik.hose/universal_robot/-/blob/d73270791bad955c5753b25045c6a6ebc0cb6ebf/ur_description/urdf/ur5.urdf.xacro -->
+
   <xacro:include filename="$(find ur_description)/urdf/ur.transmission.xacro" />
   <xacro:include filename="$(find ur_description)/urdf/ur.gazebo.xacro" />
 
@@ -380,3 +382,4 @@
 
   </xacro:macro>
 </robot>
+
